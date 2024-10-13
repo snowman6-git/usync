@@ -47,5 +47,13 @@ fn main() {
             },
         };
     }
+    let loot: Config = serde_json::from_str(&target).unwrap(); //&를 넣어 String이었던 target을 &str로 변환할수있다. 매우중요
     println!("파일이 성공적으로 열렸습니다. {}", target);
+    if let Ok(entries) = std::fs::read_dir(loot.target) {
+        for entry in entries {
+            if let Ok(entry) = entry {
+                println!("{}", entry.file_name().to_string_lossy());
+            }
+        }
+    }
 }
