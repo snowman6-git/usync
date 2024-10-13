@@ -1,43 +1,51 @@
 use rfd::FileDialog;
-use std::fs::File;
+use std::fs::{read, File};
 use std::io::{Write, Read};
 use serde_json::{json, Value};
 use std::io;
+use serde::{Serialize, Deserialize};
 
-struct Config {
-    name: String,
-    age: u32,
+#[derive(Serialize, Deserialize, Debug)]
+struct Config { //json과 일치해야함
+    target: String,
+    version: f32
 }
 
 fn config_setup(){
     if let Some(folder_path) = FileDialog::new().pick_folder(){
         let target = folder_path.display();
-        let mut config = File::create("usync.json").expect("파일 생성 실패!");
+        let config = File::create("usync.json").expect("파일 생성 실패!");
         let save = json! ({
-            "target": format!("{}", target),
-            "version": "0.0.1",
+            "target" : format!("{}", target),
+            "version" : 0.1,
         });
-        let json_string = serde_json::to_string(&save).expect("JSON 변환 실패"); //바이트 저장을 위해 문자열로 변환
-        config.write_all(json_string.as_bytes()).expect("쓰기 실패"); //저장하기
+        serde_json::to_writer(config, &save).expect("JSON 쓰기 실패!");
     } else {}
 }
 
 fn main() {
-    let mut config = File::open("usync.json");
-    match config {
-        Ok(mut config) => {
-            println!("config load ok");
-            let mut target = String::new();
-            config.read_to_string(&mut target).expect("파일 읽기 실패!");
-            println!("{}", target);
-            
-            let json_value: Value = serde_json::from_str(target).expect("JSON 파싱 실패!");
-            println!("JSON 값: {:?}", json_value);
-        }
-        Err(e) => {match e.kind() {
-                io::ErrorKind::NotFound => {eprintln!("config not found"); config_setup()}
-                io::ErrorKind::PermissionDenied => {}
-                _ => {eprintln!("파일 열기 실패: {}", e);} //finally 
-            }}
+    let mut target = String::new();
+    loop{
+        let config_load = match File::open("usync.json") {
+            Ok(file) => {
+                let mut file = file; // file 변수를 사용할 수 있도록
+                file.read_to_string(&mut target).expect("파일 읽기 실패!"); // 파일 읽기
+                break;},
+            Err(e) => match e.kind() {
+                io::ErrorKind::NotFound => {
+                    eprintln!("파일이 존재하지 않습니다. 새로운 파일을 생성합니다.");
+                    config_setup();
+                },
+                io::ErrorKind::PermissionDenied => {
+                    eprintln!("파일에 접근할 수 있는 권한이 없습니다.");
+                    return; // 또는 다른 로직으로 처리
+                },
+                _ => {
+                    eprintln!("파일 열기 실패: {}", e);
+                    return; // 또는 다른 로직으로 처리
+                }
+            },
+        };
     }
+    println!("파일이 성공적으로 열렸습니다. {}", target);
 }
