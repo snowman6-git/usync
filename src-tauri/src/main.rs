@@ -4,7 +4,7 @@
 fn main() {
     tauri::Builder::default()
     // .invoke_handler(tauri::generate_handler![link])
-    .invoke_handler(tauri::generate_handler![start])
+    .invoke_handler(tauri::generate_handler![start, config_setup])
     .run(tauri::generate_context!())
     .expect("failed to run app");
 
@@ -23,6 +23,7 @@ struct Config { //json과 일치해야함
     version: f32
 }
 
+#[tauri::command]
 fn config_setup(){
     if let Some(folder_path) = FileDialog::new().pick_folder(){
         let target = folder_path.display();

@@ -8,7 +8,8 @@ async function greet() {
   greetMsgEl.textContent = await invoke("greet", { name: greetInputEl.value });
 }
 
-function a2(){
+function config(){
+  invoke('config_setup')
   invoke('start').then(loot => {document.querySelector("#loot").textContent = loot})
 }
 window.addEventListener("DOMContentLoaded", () => {
