@@ -13,3 +13,7 @@
 0.1a
 
 conf생성과 없을시 생성요구후 재시작 없이 바로 로드
+
+경로변경기능추가
+
+![usync0 1](https://github.com/user-attachments/assets/69bd6043-71ff-46cd-8d1d-3a46be187b12)
