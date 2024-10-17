@@ -16,6 +16,7 @@ use std::io::{Write, Read};
 use serde_json::{json, Value};
 use std::io;
 use serde::{Serialize, Deserialize};
+use std::path::Path;
 
 #[derive(Serialize, Deserialize, Debug)]
 struct Config { //json과 일치해야함
@@ -36,8 +37,13 @@ fn config_setup(){
     } else {}
 }
 
+fn is_directory(path: &str) -> bool {
+    let path = Path::new(path);
+    path.is_dir()
+}
+
 #[tauri::command]
-fn start() -> std::string::String{
+fn start() -> Value {
     let mut target = String::new();
     loop{
         let config_load = match File::open("usync.json") {
@@ -62,12 +68,31 @@ fn start() -> std::string::String{
     let loot: Config = serde_json::from_str(&target).unwrap(); //&를 넣어 String이었던 target을 &str로 변환할수있다. 매우중요
     target = String::from(&loot.target);
     println!("파일이 성공적으로 열렸습니다. {}", target);
+
+    let mut folders: Vec<String> = Vec::new();
+
+
     if let Ok(entries) = std::fs::read_dir(&target) {
         for entry in entries {
             if let Ok(entry) = entry {
-                println!("{}", entry.file_name().to_string_lossy());
+
+                let path = format!("{}/{}", target, entry.file_name().to_string_lossy());
+                if is_directory(&path) {
+                    folders.push(path.clone());
+                    // folders.push(path.split('/').last().unwrap().to_string().clone());
+                    // println!("{}는 디렉토리입니다.", path);
+                } else {
+                    // println!("{}는 디렉토리가 아닙니다.", path);
+                }
+
+                // println!("{}", entry.file_name().to_string_lossy());
             }
         }
     }
-    return target;
+    let info = json! ({
+        "target" : format!("{}", target),
+        "folder" : folders,
+    });
+    println!("{}", info);
+    return info;
 }

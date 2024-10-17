@@ -8,15 +8,33 @@
   </head>
 
   <body>
-    <img id="logo" src="./assets/logo.svg" alt=""> 
-    <!-- 나중에 스테이터스별로 색상바꾸기 -->
+    <div class="panel">
+      <div class="sector" id="home">
+        <img id="logo" src="./assets/logo.svg" alt=""> 
+        <!-- 나중에 스테이터스별로 색상바꾸기 -->
+        <div id="title">usync</div>
+        <div style="display: flex; align-items: center; justify-content: center; height: 2rem;">
+          <div id="target" onclick="config()"></div>
+          </div>
+          <img onclick="location.href='#setting'" src="assets/setting.svg" style="width: 0.9rem; height: 0.9rem; filter: invert(100%);">
+      </div>
 
-    <div id="title">usync</div>
+      <div class="sector" id="setting">
+        <fieldset>
+          <legend>General</legend>
+          <input type='checkbox' value='autosync' />AutoSync
+          <input type='checkbox' value="makebackup" />Backup
+        </fieldset>
 
-    <div style="display: flex; align-items: center; justify-content: center; height: 2rem;">
-      <div id="loot" onclick="config()"></div>
+        <br>
+
+        <fieldset id="syncfolder" style="overflow-y: scroll; height: 10rem;">
+        </fieldset>
+
+        <img onclick="location.href='#home'" src="assets/back.svg" style="width: 1.5rem; height: 1.5rem; filter: invert(100%);">
+      </div>
+
     </div>
-    
   </body>
   <script type="text/javascript" src="/main.js"></script>
   <!-- <script type="module" src="/main.js" defer></script> -->

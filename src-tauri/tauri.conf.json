@@ -11,8 +11,8 @@
     "windows": [
       {
         "title": "usync",
-        "width": 800,
-        "height": 600
+        "width": 300,
+        "height": 250
         
       }
     ],
