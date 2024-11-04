@@ -4,3 +4,5 @@
 
 설정 탭 추가, 애니메이션 추가, 기본 버튼들 추가.
 *여전히 간혹 경로 변경이 반영이 안돼는 문제가 조금씩 있음.
+
+if didnt have file explorer, they fall in et loop
